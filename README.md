@@ -1,6 +1,105 @@
-# Crow REST API Example
+# REST API Server
 
-A modern C++ REST API server demonstrating the use of the [Crow Framework](https://crowcpp.org). This example implements a simple data management API with thread-safe operations and JSON responses.
+A simple REST API server implemented using Crow framework with SQLite backend.
+
+## Dependencies
+
+- Crow (C++ web framework)
+- SQLite3
+- Boost
+- C++17 or higher
+
+## Build Instructions
+
+1. Make sure you have Conan package manager installed
+2. Run the following commands:
+
+```bash
+mkdir build && cd build
+conan install .. --output-folder=. --build=missing
+cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+cmake --build .
+```
+
+## Database
+
+The application automatically creates an SQLite database at `data/crow_api.db` with a table structure:
+
+```sql
+CREATE TABLE data (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    value REAL NOT NULL
+);
+```
+
+## API Endpoints
+
+### GET /api/data
+
+Retrieves all data entries.
+
+**Response Format:**
+```json
+{
+    "status": "success",
+    "data": [
+        {
+            "id": 1,
+            "name": "example",
+            "value": 123.45
+        }
+    ]
+}
+```
+
+### POST /api/data
+
+Creates a new data entry.
+
+**Request Body:**
+```json
+{
+    "name": "example",
+    "value": 123.45
+}
+```
+
+**Response Format:**
+```json
+{
+    "status": "created",
+    "data": {
+        "id": 1,
+        "name": "example",
+        "value": 123.45
+    }
+}
+```
+
+## Error Handling
+
+The API returns appropriate HTTP status codes:
+- 200: Successful GET request
+- 201: Successful POST request
+- 400: Invalid request format
+- 500: Server error
+
+Error responses include a message explaining the error:
+```json
+{
+    "status": "error",
+    "message": "Error description"
+}
+```
+
+## Running the Server
+
+The server runs on port 8080 by default. Launch the executable after building:
+
+```bash
+./bin/crow_rest_api
+```
 
 ## Features
 
@@ -13,10 +112,14 @@ A modern C++ REST API server demonstrating the use of the [Crow Framework](https
 
 ## Prerequisites
 
-- C++17 compatible compiler
+- C++17 compatible compiler (GCC 8+, Clang 7+, or MSVC 2019+)
 - CMake 3.14 or higher
 - Conan package manager 2.x
 - Git
+- Boost 1.73.0 or higher
+- SQLite 3.44.2 or higher
+- At least 1GB of free disk space
+- Internet connection for dependency downloads
 
 ## Building the Project
 
@@ -117,21 +220,40 @@ Response:
 
 ```
 crow-rest-server/
-├── CMakeLists.txt      # CMake build configuration
-├── conanfile.txt       # Conan dependencies
-├── build_all.sh        # Build automation script
-├── README.md
+├── CMakeLists.txt          # CMake build configuration
+├── conanfile.txt           # Conan dependencies
+├── build_all.sh            # Build automation script
+├── README.md               # Project documentation
+├── data/                   # Database storage directory
+│   └── crow_api.db        # SQLite database file
 └── src/
-    └── main.cpp        # Server implementation
+    └── main.cpp           # Server implementation
 ```
 
-## Implementation Details
+## Troubleshooting
 
-- Uses `std::shared_mutex` for thread-safe database operations
-- Implements atomic ID generation for new records
-- Validates JSON input for POST requests
-- Returns appropriate HTTP status codes (200, 201, 400)
-- Supports multithreaded request handling
+### Common Issues
+
+1. **CMake can't find Conan packages**
+   - Ensure you're using Conan 2.x
+   - Run `conan profile detect` to create a default profile
+   - Make sure to use the correct toolchain file path
+
+2. **Build fails with missing Boost**
+   - Check if Boost is properly installed via Conan
+   - Try running `conan install .. --build=boost`
+
+3. **Database access errors**
+   - Ensure write permissions in the `data` directory
+   - Check if SQLite3 is properly installed
+   - Verify database file isn't locked by another process
+
+4. **Server won't start**
+   - Check if port 8080 is available
+   - Ensure proper permissions to create network socket
+   - Verify all dependencies are properly linked
+
+For more issues, please check the GitHub issues page or create a new issue.
 
 ## Contributing
 
@@ -148,6 +270,16 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - [Crow Framework](https://crowcpp.org) - C++ microframework for web
+- [SQLite](https://www.sqlite.org/) - Embedded SQL database engine
 - [Boost](https://www.boost.org/) - C++ libraries
 - [Conan](https://conan.io/) - C/C++ package manager
+- [CMake](https://cmake.org/) - Build system generator
+- [JSON for Modern C++](https://github.com/nlohmann/json) - JSON library for C++
+
+## Security
+
+- Database is protected against SQL injection through prepared statements
+- Input validation for all API endpoints
+- Thread-safe operations using mutex locks
+- No sensitive data exposure in error messages
 
