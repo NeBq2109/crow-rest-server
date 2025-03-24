@@ -12,9 +12,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# Set default build type if not specified
+# Enhanced build type configuration
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# Set compile options based on build type
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    message(STATUS "Debug build - adding debug flags")
+    add_compile_options(-g -O0 -Wall -Wextra -Wpedantic)
+else()
+    message(STATUS "Release build - optimizing")
+    add_compile_options(-O3)
 endif()
 
 # Download Crow using FetchContent

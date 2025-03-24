@@ -125,25 +125,26 @@ The server runs on port 8080 by default. Launch the executable after building:
 
 ### Using the Build Script (Recommended)
 
-The easiest way to build the project is using the provided build script:
+The easiest way to build the project is using the provided build script. The script supports both Release and Debug builds:
 
 ```bash
-# Clone the repository
-git clone https://github.com/NeBq2109/crow-rest-server.git
-cd crow-rest-server
-
-# Make the build script executable
-chmod +x build_all.sh
-
-# Run the build script
+# For Release build (default)
 ./build_all.sh
+
+# For Debug build
+./build_all.sh Debug
 ```
 
 The script will:
-1. Set up the Conan dependencies
-2. Configure CMake with the correct toolchain
+1. Set up the Conan dependencies with the specified build type
+2. Configure CMake with the correct toolchain and build type
 3. Build the project
-4. Install the executable to `build/local_install/bin`
+4. Install the executable to `build/<build_type>/local_install/bin`
+
+### Build Types
+
+- **Release** (default): Optimized build with -O3 flag
+- **Debug**: Includes debug symbols and additional warning flags
 
 ### Manual Build
 
