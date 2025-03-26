@@ -133,7 +133,7 @@ int main() {
             }
             
             result["data"] = std::move(data_json);
-            return crow::response(result);
+            return crow::response(result.dump(2) + "\n");
         } catch (const std::exception& e) {
             result["status"] = "error";
             result["message"] = e.what();
