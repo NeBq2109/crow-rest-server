@@ -6,7 +6,6 @@ A simple REST API server implemented using Crow framework with SQLite backend.
 
 - Crow (C++ web framework)
 - SQLite3
-- Boost
 - C++17 or higher
 
 ## Build Instructions
@@ -116,7 +115,6 @@ The server runs on port 8080 by default. Launch the executable after building:
 - CMake 3.14 or higher
 - Conan package manager 2.x
 - Git
-- Boost 1.73.0 or higher
 - SQLite 3.44.2 or higher
 - At least 1GB of free disk space
 - Internet connection for dependency downloads
@@ -240,16 +238,12 @@ crow-rest-server/
    - Run `conan profile detect` to create a default profile
    - Make sure to use the correct toolchain file path
 
-2. **Build fails with missing Boost**
-   - Check if Boost is properly installed via Conan
-   - Try running `conan install .. --build=boost`
-
-3. **Database access errors**
+2. **Database access errors**
    - Ensure write permissions in the `data` directory
    - Check if SQLite3 is properly installed
    - Verify database file isn't locked by another process
 
-4. **Server won't start**
+3. **Server won't start**
    - Check if port 8080 is available
    - Ensure proper permissions to create network socket
    - Verify all dependencies are properly linked
@@ -272,7 +266,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [Crow Framework](https://crowcpp.org) - C++ microframework for web
 - [SQLite](https://www.sqlite.org/) - Embedded SQL database engine
-- [Boost](https://www.boost.org/) - C++ libraries
 - [Conan](https://conan.io/) - C/C++ package manager
 - [CMake](https://cmake.org/) - Build system generator
 - [JSON for Modern C++](https://github.com/nlohmann/json) - JSON library for C++

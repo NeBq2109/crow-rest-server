@@ -3,8 +3,7 @@ project(crow_rest_api)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add this for Conan 2.x
-find_package(Boost REQUIRED)
+# Can be loaded by conan_toolchain.cmake
 find_package(SQLite3 REQUIRED)
 
 # Enhanced build type configuration
@@ -27,7 +26,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-# Download Crow using FetchContent
+# Download Crow using FetchContent - no conan package available
 include(FetchContent)
 FetchContent_Declare(
     crow
@@ -48,17 +47,14 @@ add_executable(${PROJECT_NAME}
 # Add include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${Boost_INCLUDE_DIRS}
     ${crow_SOURCE_DIR}/include
     ${SQLite3_INCLUDE_DIRS}
 )
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Boost::boost
     SQLite::SQLite3
     Crow::Crow
-    pthread
 )
 
 # Install target
