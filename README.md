@@ -218,15 +218,16 @@ Response:
 ## Project Structure
 
 ```
-crow-rest-server/
-├── CMakeLists.txt          # CMake build configuration
+crow_rest_server/
+├── CMakeLists.txt          # Main build configuration
 ├── conanfile.txt           # Conan dependencies
 ├── build_all.sh            # Build automation script
 ├── README.md               # Project documentation
-├── data/                   # Database storage directory
-│   └── crow_api.db        # SQLite database file
-└── src/
-    └── main.cpp           # Server implementation
+├── LICENSE                 # MIT License file
+├── .vscode/               # VS Code configuration
+├── include/               # Header files
+├── src/                  # Source files
+└── data/                 # Runtime data directory
 ```
 
 ## Troubleshooting
