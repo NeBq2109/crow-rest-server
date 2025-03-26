@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "conan-install",
+            "type": "shell",
+            "command": "mkdir -p build/conan && cd build/conan && conan install ../.. --output-folder=. --build=missing -s build_type=Debug",
+            "problemMatcher": []
+        },
+        {
+            "label": "cmake-build",
+            "type": "shell",
+            "command": "cd build && cmake .. -DCMAKE_TOOLCHAIN_FILE=conan/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug && cmake --build .",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "dependsOn": ["conan-install"]
+        },
+        {
+            "label": "quick-build",
+            "type": "shell",
+            "command": "cd build && cmake --build .",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "rm -rf build && mkdir build",
+            "problemMatcher": []
+        }
+    ]
+}
