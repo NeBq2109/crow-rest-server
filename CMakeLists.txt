@@ -7,11 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
 
-# Set build output directories
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
 # Enhanced build type configuration
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -27,34 +22,47 @@ else()
     add_compile_options(-O3)
 endif()
 
+# Set single output directory for all build types
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
 # Download Crow using FetchContent
 include(FetchContent)
 FetchContent_Declare(
-  crow
-  GIT_REPOSITORY https://github.com/CrowCpp/Crow
-  GIT_TAG master
+    crow
+    GIT_REPOSITORY https://github.com/CrowCpp/Crow
+    GIT_TAG master
 )
 FetchContent_MakeAvailable(crow)
 
 # Add source files
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} 
+    src/main.cpp
+    src/api_server.cpp
+    src/request_handler.cpp
+    src/database_manager.cpp
+    src/utils.cpp
+)
 
 # Add include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
-  ${Boost_INCLUDE_DIRS}
-  ${crow_SOURCE_DIR}/include # Path to Crow's include directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${Boost_INCLUDE_DIRS}
+    ${crow_SOURCE_DIR}/include
+    ${SQLite3_INCLUDE_DIRS}
 )
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE
-  Boost::boost
-  SQLite::SQLite3
-  pthread
+    Boost::boost
+    SQLite::SQLite3
+    Crow::Crow
+    pthread
 )
 
 # Install target
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+    CONFIGURATIONS Debug Release
 )
