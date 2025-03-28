@@ -1,8 +1,18 @@
 #include "api_server.hpp"
+#include "request_handler.hpp"
+#include "database_manager.hpp"
 
 ApiServer::ApiServer(const std::string& db_path)
     : db_manager(std::make_shared<DatabaseManager>(db_path))
     , handler(std::make_shared<RequestHandler>(db_manager))
+{
+    setup_routes();
+}
+
+ApiServer::ApiServer(std::shared_ptr<IDatabaseManager> db_manager_impl, 
+                    std::shared_ptr<IRequestHandler> handler_impl)
+    : db_manager(std::move(db_manager_impl))
+    , handler(std::move(handler_impl))
 {
     setup_routes();
 }

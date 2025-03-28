@@ -1,4 +1,5 @@
 #include "database_manager.hpp"
+#include "data.hpp"
 #include <stdexcept>
 
 DatabaseManager::DatabaseManager(const std::string& db_path) 

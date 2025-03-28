@@ -1,7 +1,8 @@
 #include "request_handler.hpp"
+#include "database_manager.hpp"
 #include "utils.hpp"
 
-RequestHandler::RequestHandler(std::shared_ptr<DatabaseManager> db)
+RequestHandler::RequestHandler(std::shared_ptr<IDatabaseManager> db)
     : db_manager(std::move(db))
 {}
 

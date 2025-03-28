@@ -1,17 +1,16 @@
 #pragma once
-#include <crow.h>
 #include <shared_mutex>
-#include "database_manager.hpp"
+#include "interfaces/i_database_manager.hpp"
+#include "interfaces/i_request_handler.hpp"
 
-class RequestHandler 
+class RequestHandler final : public IRequestHandler
 {
 public:
-    explicit RequestHandler(std::shared_ptr<DatabaseManager> db);
-    ~RequestHandler() = default;
-    crow::response handle_get_all();
-    crow::response handle_create(const crow::request& req);
+    explicit RequestHandler(std::shared_ptr<IDatabaseManager> db);
+    crow::response handle_get_all() override;
+    crow::response handle_create(const crow::request& req) override;
 
 private:
-    std::shared_ptr<DatabaseManager> db_manager;
+    std::shared_ptr<IDatabaseManager> db_manager;
     std::shared_mutex db_mutex;
 };
