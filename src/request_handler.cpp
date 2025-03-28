@@ -17,7 +17,7 @@ crow::response RequestHandler::handle_get_all()
         for (const auto& item : items)
             data_json.push_back(utils::serialize_data(item));
         
-        return crow::response(utils::create_success_response(std::move(data_json)));
+        return crow::response(200, utils::create_success_response(std::move(data_json)));
     } 
     catch (const std::exception& e) 
     {

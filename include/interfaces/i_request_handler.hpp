@@ -1,7 +1,8 @@
 #pragma once
 #include <crow.h>
 
-class IRequestHandler {
+class IRequestHandler 
+{
 public:
     virtual ~IRequestHandler() = default;
     virtual crow::response handle_get_all() = 0;

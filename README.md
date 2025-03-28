@@ -10,15 +10,26 @@ A simple REST API server implemented using Crow framework with SQLite backend.
 
 ## Build Instructions
 
-1. Make sure you have Conan package manager installed
-2. Run the following commands:
+1. Make sure you have Conan 2.x package manager installed
+2. Choose a build configuration and follow the corresponding commands:
 
+### Release Build (Default)
 ```bash
-mkdir build && cd build
-conan install .. --output-folder=. --build=missing
-cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+mkdir -p build/release && cd build/release
+conan install ../.. --output-folder=. --build=missing
+cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ```
+
+### Debug Build
+```bash
+mkdir -p build && cd build
+conan install .. --output-folder=. --build=missing
+cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+```
+
+The debug build includes additional debug symbols and compiler flags (-g3 -ggdb -O0 -Wall -Wextra -Wpedantic).
 
 ## Database
 
@@ -143,23 +154,6 @@ The script will:
 
 - **Release** (default): Optimized build with -O3 flag
 - **Debug**: Includes debug symbols and additional warning flags
-
-### Manual Build
-
-If you prefer to build manually:
-
-```bash
-# Create build directory
-mkdir -p build/conan && cd build/conan
-
-# Install dependencies
-conan install ../.. --build=missing -of=.
-
-# Configure and build
-cd ..
-cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-cmake --build .
-```
 
 ## Running the Server
 
