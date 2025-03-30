@@ -4,10 +4,9 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ "main" ]
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 0'
 
 jobs:
   codeql:
@@ -20,25 +19,24 @@ jobs:
         build-mode: [ "manual" ]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up CodeQL
-        uses: github/codeql-action/setup@v2
-        with:
-          languages: ${{ matrix.language }}
-          tools: ${{ matrix.language }}
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
 
-      - name: Install Conan 2
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          pip3 install conan==2.0.0
+    - name: Install Conan 2
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-pip
+        pip3 install conan==2.0.0
 
-      - name: Build code
-        run: |
-          chmod +x build_all.sh
-          ./build_all.sh Release
+    - name: Build code
+      run: |
+        chmod +x build_all.sh
+        ./build_all.sh Release
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
