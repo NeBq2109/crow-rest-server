@@ -37,7 +37,7 @@ add_executable(${PROJECT_NAME}
 
 # Add include directories for the executable
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/libs/restapi_core/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/rest_st/include
 )
 
 # Link with the core library

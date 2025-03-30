@@ -1,6 +1,8 @@
 #include "utils.hpp"
 
-namespace utils 
+using Data = rst::core::Data;
+
+namespace rst::utils 
 {
     crow::json::wvalue serialize_data(const Data& item) 
     {
