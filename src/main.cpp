@@ -1,5 +1,6 @@
 #include <filesystem>
 #include "api_server.hpp"
+#include <iostream>
 
 int main() 
 {

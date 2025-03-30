@@ -1,4 +1,5 @@
 #include "api_server.hpp"
+#include <iostream>
 #include "request_handler.hpp"
 #include "database_manager.hpp"
 

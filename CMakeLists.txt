@@ -3,10 +3,6 @@ project(crow_rest_api)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Can be loaded by conan_toolchain.cmake
-find_package(SQLite3 REQUIRED)
-find_package(Crow REQUIRED)
-
 # Enhanced build type configuration
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -27,26 +23,26 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-# Add source files
+# Add the libs subdirectory if it exists
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/libs/CMakeLists.txt")
+    add_subdirectory(libs)
+else()
+    message(FATAL_ERROR "libs/CMakeLists.txt not found. Please ensure the directory structure is correct.")
+endif()
+
+# Main executable
 add_executable(${PROJECT_NAME} 
     src/main.cpp
-    src/api_server.cpp
-    src/request_handler.cpp
-    src/database_manager.cpp
-    src/utils.cpp
 )
 
-# Add include directories
+# Add include directories for the executable
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${crow_SOURCE_DIR}/include
-    ${SQLite3_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/restapi_core/include
 )
 
-# Link libraries
+# Link with the core library
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    SQLite::SQLite3
-    Crow::Crow
+    restapi_core
 )
 
 # Install target
