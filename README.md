@@ -1,24 +1,36 @@
 # REST API Server
 
-A simple REST API server implemented using Crow framework with SQLite backend.
+A REST API server implemented using Crow framework with SQLite backend. The project utilizes RST (REST Server Toolkit) - a custom library providing core components for building REST services. RST encapsulates common server functionality like request handling, database management, and API routing.
 
 ## Dependencies
 
 - Crow (C++ web framework)
 - SQLite3
 - C++17 or higher
+- RST (REST Server Toolkit) - included in libs/rest_st
 
 ## Build Instructions
 
-1. Make sure you have Conan package manager installed
-2. Run the following commands:
+1. Make sure you have Conan 2.x package manager installed
+2. Choose a build configuration and follow the corresponding commands:
 
+### Release Build (Default)
 ```bash
-mkdir build && cd build
-conan install .. --output-folder=. --build=missing
-cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+mkdir -p build/release && cd build/release
+conan install ../.. --output-folder=. --build=missing
+cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ```
+
+### Debug Build
+```bash
+mkdir -p build && cd build
+conan install .. --output-folder=. --build=missing
+cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+cmake --build .
+```
+
+The debug build includes additional debug symbols and compiler flags (-g3 -ggdb -O0 -Wall -Wextra -Wpedantic).
 
 ## Database
 
@@ -109,67 +121,34 @@ The server runs on port 8080 by default. Launch the executable after building:
 - Conan package management
 - CMake build system
 
-## Prerequisites
+## Building and Running
 
+### Prerequisites
 - C++17 compatible compiler (GCC 8+, Clang 7+, or MSVC 2019+)
 - CMake 3.14 or higher
 - Conan package manager 2.x
-- Git
 - SQLite 3.44.2 or higher
-- At least 1GB of free disk space
-- Internet connection for dependency downloads
+- Git
 
-## Building the Project
-
-### Using the Build Script (Recommended)
-
-The easiest way to build the project is using the provided build script. The script supports both Release and Debug builds:
+### Build Instructions
+1. Make sure you have Conan 2.x package manager installed
+2. Choose a build configuration:
 
 ```bash
-# For Release build (default)
+# Release build (default)
 ./build_all.sh
 
-# For Debug build
+# Debug build
 ./build_all.sh Debug
 ```
 
-The script will:
-1. Set up the Conan dependencies with the specified build type
-2. Configure CMake with the correct toolchain and build type
-3. Build the project
-4. Install the executable to `build/<build_type>/local_install/bin`
+The script handles dependency setup, build configuration, and installation to `build/<build_type>/local_install/bin`.
 
-### Build Types
-
-- **Release** (default): Optimized build with -O3 flag
-- **Debug**: Includes debug symbols and additional warning flags
-
-### Manual Build
-
-If you prefer to build manually:
-
-```bash
-# Create build directory
-mkdir -p build/conan && cd build/conan
-
-# Install dependencies
-conan install ../.. --build=missing -of=.
-
-# Configure and build
-cd ..
-cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-cmake --build .
-```
-
-## Running the Server
-
-After building, run the server:
-
+### Running
+Launch the server (runs on port 8080):
 ```bash
 ./build/crow_rest_api
 ```
-
-The server will start on `http://localhost:8080`.
 
 ## API Documentation
 
@@ -215,7 +194,9 @@ Response:
 }
 ```
 
-## Project Structure
+## Architecture
+
+### Project Structure
 
 ```
 crow_rest_server/
@@ -224,12 +205,35 @@ crow_rest_server/
 ├── build_all.sh            # Build automation script
 ├── README.md               # Project documentation
 ├── LICENSE                 # MIT License file
-├── .vscode/               # VS Code configuration
-├── include/               # Header files
-├── src/                  # Source files
-└── data/                 # Runtime data directory
+├── libs/                   # Library components
+│   └── rest_st/           # REST Server Toolkit (RST) - Core library
+│       ├── include/       # Public headers for RST components
+│       ├── src/          # RST implementation files
+│       └── CMakeLists.txt # RST build configuration
+├── src/                   # Main application source
+└── data/                  # Runtime data directory
 ```
 
+## Namespaces
+
+The codebase follows a hierarchical namespace organization:
+
+- `rst`
+  - Main namespace containing the server wrapper class `ApiServer`
+  - Provides the primary application interface
+  - Coordinates core components and server lifecycle
+
+- `rst::core`
+  - Contains core infrastructure components:
+    - Data structures (`Data`, etc.)
+    - Interfaces (`IDatabaseManager`, `IRequestHandler`)
+    - Database management implementation
+    - Request handling logic
+
+- `rst::utils`
+  - Utility functions for data serialization and response formatting
+  - Helper functions shared across components
+  
 ## Troubleshooting
 
 ### Common Issues
@@ -265,11 +269,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- [Crow Framework](https://crowcpp.org) - C++ microframework for web
+- [Crow Framework](https://crowcpp.org) - C++ microframework for web with JSON support
 - [SQLite](https://www.sqlite.org/) - Embedded SQL database engine
 - [Conan](https://conan.io/) - C/C++ package manager
 - [CMake](https://cmake.org/) - Build system generator
-- [JSON for Modern C++](https://github.com/nlohmann/json) - JSON library for C++
 
 ## Security
 

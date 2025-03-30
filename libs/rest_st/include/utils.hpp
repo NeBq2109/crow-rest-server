@@ -2,7 +2,9 @@
 #include <crow.h>
 #include "data.hpp"
 
-namespace utils 
+using Data = rst::core::Data;
+
+namespace rst::utils 
 {
     crow::json::wvalue serialize_data(const Data& item);
     crow::json::wvalue create_error_response(const std::string& message);
@@ -15,4 +17,4 @@ namespace utils
         response["data"] = std::move(data);
         return response.dump(2) + "\n";
     }
-}
+} // namespace rst::utils

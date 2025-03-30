@@ -1,5 +1,6 @@
 #include <filesystem>
 #include "api_server.hpp"
+#include <iostream>
 
 int main() 
 {
@@ -7,7 +8,7 @@ int main()
     {
         std::filesystem::create_directories("data");
         
-        ApiServer server("data/crow_api.db");
+        rst::ApiServer server("data/crow_api.db");
         server.start(8080);
     } 
     catch (const std::exception& e) 
