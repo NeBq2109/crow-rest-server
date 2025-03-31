@@ -8,17 +8,10 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-permissions:
-  actions: read
-  contents: read
-  security-events: write
-
 jobs:
   codeql:
     name: "CodeQL Analysis"
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
 
     strategy:
       matrix:
@@ -29,28 +22,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake tar ninja-build
+
       - name: Set up CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Conan
         run: |
           python3 -m pip install --user "conan>=2.0.0"
+          export PATH="/root/.local/bin:$PATH"
           conan --version
           conan profile detect --force
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake sqlite3 libsqlite3-dev
-
       - name: Build code
         run: |
-          chmod +x build_all.sh
-          ./build_all.sh Release
+          export PATH="/root/.local/bin:$PATH"
+          mkdir -p build/conan
+          cd build/conan
+          conan install ../.. --output-folder=. --build=missing
+          cd ..
+          cmake .. -G Ninja -DCMAKE_TOOLCHAIN_FILE=conan/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+          cmake --build .
+
+      - name: Create results directory
+        run: mkdir -p results
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          output: results
+          upload: false
